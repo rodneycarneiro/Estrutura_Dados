@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <windows.h>
-#include <time.h>
 #include <conio.h>
 
 // Definição Estruturas de dados
@@ -84,24 +83,24 @@ void tela()
 void tela_clie()
 {
     tela();
-    gotoxy(10, 05);
-    printf("Codigo do Cliente.: ");
-    gotoxy(10, 07);
-    printf("Nome do Cliente...: ");
-    gotoxy(10, 9);
-    printf("Endereco..........: ");
-    gotoxy(10, 11);
-    printf("Numero............: ");
-    gotoxy(10, 13);
-    printf("CPF...............: ");
-    gotoxy(10, 15);
-    printf("Cidade............: ");
-    gotoxy(10, 17);
-    printf("Estado............: ");
-    gotoxy(10, 19);
-    printf("Data cadastro.....: ");
-    gotoxy(10, 21);
-    printf("Telefone..........: ");
+    gotoxy(07, 05);
+    printf("1- Codigo do Cliente.: ");
+    gotoxy(07, 07);
+    printf("2- Nome do Cliente...: ");
+    gotoxy(07, 9);
+    printf("3- Endereco..........: ");
+    gotoxy(07, 11);
+    printf("4- Numero............: ");
+    gotoxy(07, 13);
+    printf("5- CPF...............: ");
+    gotoxy(07, 15);
+    printf("6- Cidade............: ");
+    gotoxy(07, 17);
+    printf("7- Estado............: ");
+    gotoxy(07, 19);
+    printf("8- Data cadastro.....: ");
+    gotoxy(07, 21);
+    printf("9- Telefone..........: ");
 }
 
 // Limpa a Tela
@@ -214,6 +213,29 @@ void ordena_nome(TipoLista *L)
     }
 }
 
+// Le as informações do Cliente
+void leitura(reg_cliente *reg_clie)
+{
+    gotoxy(30, 07);
+    fgets(reg_clie->nm_cliente, 50, stdin);
+    gotoxy(30, 9);
+    fgets(reg_clie->ds_endereco, 50, stdin);
+    gotoxy(30, 11);
+    scanf("%d", &reg_clie->nr_numero);
+    getchar();
+    gotoxy(30, 13);
+    fgets(reg_clie->nr_documento, 20, stdin);
+    gotoxy(30, 15);
+    fgets(reg_clie->ds_cidade, 50, stdin);
+    gotoxy(30, 17);
+    fgets(reg_clie->cd_uf, 05, stdin);
+    gotoxy(30, 19);
+    fflush(stdin);
+    fgets(reg_clie->dt_cadastro, 19, stdin);
+    gotoxy(30, 21);
+    fgets(reg_clie->nr_telefone, 15, stdin);
+}
+
 // Cadastrar Cliente na Lista
 void cadastrar(TipoLista *L)
 {
@@ -241,24 +263,9 @@ void cadastrar(TipoLista *L)
             printf("                                            ");
         }
     } while (aux1 != NULL);
-    gotoxy(30, 07);
-    fgets(reg_clie.nm_cliente, 50, stdin);
-    gotoxy(30, 9);
-    fgets(reg_clie.ds_endereco, 50, stdin);
-    gotoxy(30, 11);
-    scanf("%d", &reg_clie.nr_numero);
-    getchar();
-    gotoxy(30, 13);
-    fgets(reg_clie.nr_documento, 20, stdin);
-    gotoxy(30, 15);
-    fgets(reg_clie.ds_cidade, 50, stdin);
-    gotoxy(30, 17);
-    fgets(reg_clie.cd_uf, 05, stdin);
-    gotoxy(30, 19);
-    fflush(stdin);
-    fgets(reg_clie.dt_cadastro, 19, stdin);
-    gotoxy(30, 21);
-    fgets(reg_clie.nr_telefone, 15, stdin);
+    // Le os dados do Cliente
+    leitura(&reg_clie);
+
     gotoxy(07, 23);
     printf("Deseja gravar os dados (1-Sim; 2-Nao).:");
     scanf("%d", &resp);
@@ -283,9 +290,66 @@ void cadastrar(TipoLista *L)
 }
 
 // Consultar Cliente
+void consultar_cliente(TipoLista *L)
+{
+    TipoApontador p;
+    int codigo;
+    int qtde;
+    p = L->Primeiro;
+    if (p == NULL)
+    {
+        tela();
+        gotoxy(8, 23);
+        printf("LISTA VAZIA...");
+        getch();
+    }
+    else
+    {
+        do
+        {
+            tela();
+            tela_clie();
+            gotoxy(25, 03);
+            printf("CONSULTAR CLIENTE ESPECIFICO");
+            gotoxy(60, 03);
+            qtde = conta_elementos(L);
+            printf("Total Clientes.: %d", qtde);
+            gotoxy(30, 05);
+            scanf("%d", &codigo);
+            p = pesquisa(L, codigo);
+            if (p == NULL)
+            {
+                gotoxy(07, 23);
+                printf("Cliente Nao Cadastrado..");
+                getch();
+            }
+        } while (p == NULL);
+        gotoxy(30, 05);
+        printf("%d", p->conteudo.cd_cliente);
+        gotoxy(30, 07);
+        printf("%s", p->conteudo.nm_cliente);
+        gotoxy(30, 9);
+        printf("%s", p->conteudo.ds_endereco);
+        gotoxy(30, 11);
+        printf("%d", p->conteudo.nr_numero);
+        gotoxy(30, 13);
+        printf("%s", p->conteudo.nr_documento);
+        gotoxy(30, 15);
+        printf("%s", p->conteudo.ds_cidade);
+        gotoxy(30, 17);
+        printf("%s", p->conteudo.cd_uf);
+        gotoxy(30, 19);
+        printf("%s", p->conteudo.dt_cadastro);
+        gotoxy(30, 21);
+        printf("%s", p->conteudo.nr_telefone);
+        gotoxy(10, 23);
+        system("pause");
+    }
+}
+
+// Consultar Cliente
 void consultar(TipoLista *L)
 {
-    int resp;
     TipoApontador p;
     p = L->Primeiro;
     if (p == NULL)
@@ -356,24 +420,8 @@ void cad_inicio(TipoLista *L)
             printf("                                            ");
         }
     } while (aux1 != NULL);
-    gotoxy(30, 07);
-    fgets(reg_clie.nm_cliente, 50, stdin);
-    gotoxy(30, 9);
-    fgets(reg_clie.ds_endereco, 50, stdin);
-    gotoxy(30, 11);
-    scanf("%d", &reg_clie.nr_numero);
-    getchar();
-    gotoxy(30, 13);
-    fgets(reg_clie.nr_documento, 20, stdin);
-    gotoxy(30, 15);
-    fgets(reg_clie.ds_cidade, 50, stdin);
-    gotoxy(30, 17);
-    fgets(reg_clie.cd_uf, 05, stdin);
-    gotoxy(30, 19);
-    fflush(stdin);
-    fgets(reg_clie.dt_cadastro, 19, stdin);
-    gotoxy(30, 21);
-    fgets(reg_clie.nr_telefone, 15, stdin);
+    // Le os dados do Cliente
+    leitura(&reg_clie);
 
     gotoxy(07, 23);
     printf("Deseja gravar os dados (1-Sim; 2-Nao).:");
@@ -444,23 +492,8 @@ void cad_posicao(TipoLista *L)
                 printf("                                            ");
             }
         } while (aux1 != NULL);
-        gotoxy(30, 07);
-        fgets(reg_clie.nm_cliente, 50, stdin);
-        gotoxy(30, 9);
-        fgets(reg_clie.ds_endereco, 50, stdin);
-        gotoxy(30, 11);
-        scanf("%d", &reg_clie.nr_numero);
-        getchar();
-        gotoxy(30, 13);
-        fgets(reg_clie.nr_documento, 20, stdin);
-        gotoxy(30, 15);
-        fgets(reg_clie.ds_cidade, 50, stdin);
-        gotoxy(30, 17);
-        fgets(reg_clie.cd_uf, 05, stdin);
-        gotoxy(30, 19);
-        fgets(reg_clie.dt_cadastro, 19, stdin);
-        gotoxy(30, 21);
-        fgets(reg_clie.nr_telefone, 15, stdin);
+        // Le os dados do Cliente
+        leitura(&reg_clie);
 
         gotoxy(07, 23);
         printf("Deseja gravar os dados (1-Sim; 2-Nao).:");
@@ -720,13 +753,13 @@ void remove_inicio(TipoLista *L)
 }
 
 // Consultar em Lista
-void consulta_todos(TipoLista *L,char msg[40])
+void consulta_todos(TipoLista *L, char msg[40])
 {
     TipoApontador p;
     int lin;
     tela();
     gotoxy(22, 03);
-    printf("%s",msg);
+    printf("%s", msg);
     lin = 7;
     gotoxy(02, 05);
     printf("Cd Nome                       CPF            Cidade          UF Telefone   ");
@@ -779,13 +812,15 @@ void menu_consultar(TipoLista *L)
         gotoxy(30, 03);
         printf("SUBMENU CONSULTA");
         gotoxy(25, 10);
-        printf("1 - Consultar Fichario do Cliente");
+        printf("1 - Consultar Fichario do Cliente Geral");
         gotoxy(25, 12);
         printf("2 - Consultar em Ordem de Codigo");
         gotoxy(25, 14);
         printf("3 - Consultar em Order Alfabetica");
         gotoxy(25, 16);
-        printf("4 - Retornar Menu Principal");
+        printf("4 - Consultar o Codigo Especifico");
+        gotoxy(25, 18);
+        printf("5 - Retornar Menu Principal");
         gotoxy(8, 23);
         printf("Digite sua opcao.: ");
         gotoxy(28, 23);
@@ -797,17 +832,20 @@ void menu_consultar(TipoLista *L)
             break;
         case 2:
             ordena_codigo(L);
-            consulta_todos(L,"CONSULTA LISTA CLIENTES - ORDEM DE CODIGO");
+            consulta_todos(L, "CONSULTA LISTA CLIENTES - ORDEM DE CODIGO");
             break;
         case 3:
             ordena_nome(L);
-            consulta_todos(L,"CONSULTA LISTA CLIENTES - ORDEM ALFABETICA");
+            consulta_todos(L, "CONSULTA LISTA CLIENTES - ORDEM ALFABETICA");
+            break;
+        case 4:
+            consultar_cliente(L);
             break;
         default:
             break;
         }
 
-    } while (opc != 4);
+    } while (opc != 5);
 }
 
 // Programa principal
